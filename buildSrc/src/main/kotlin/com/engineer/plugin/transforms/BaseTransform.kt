@@ -3,17 +3,11 @@ package com.engineer.plugin.transforms
 import com.android.SdkConstants
 import com.android.build.api.transform.*
 import com.android.build.gradle.internal.pipeline.TransformManager
-import com.android.build.gradle.internal.pipeline.TransformTask
 import com.android.builder.utils.isValidZipEntryName
 import com.android.utils.FileUtils
 import com.engineer.plugin.utils.BeautyLog
 import com.google.common.io.Files
-import org.apache.commons.io.IOUtils
 import org.gradle.api.Project
-import org.gradle.internal.io.IoUtils
-import org.objectweb.asm.ClassReader
-import org.objectweb.asm.ClassVisitor
-import org.objectweb.asm.ClassWriter
 import java.io.*
 import java.util.function.BiConsumer
 import java.util.zip.ZipEntry
@@ -27,7 +21,6 @@ import java.util.zip.ZipOutputStream
  * 支持 incremental 的 transform
  */
 abstract class BaseTransform(private val project: Project) : Transform() {
-
 
 
     // 将对 class 文件的 asm 处理，处理完之后的再次复制，抽象为一个 BiConsumer
@@ -83,6 +76,7 @@ abstract class BaseTransform(private val project: Project) : Transform() {
                     Format.JAR
                 )
                 if (transformInvocation.isIncremental) {
+                    //增量编译支持
                     when (jarInput.status ?: Status.NOTCHANGED) {
                         Status.NOTCHANGED -> {
                         }
@@ -132,17 +126,17 @@ abstract class BaseTransform(private val project: Project) : Transform() {
                         }
                     }
                 } else {
-                    for (`in` in FileUtils.getAllFiles(inputDir)) {
+                    for (inputFile in FileUtils.getAllFiles(inputDir)) {
                         val out =
-                            toOutputFile(outputDir, inputDir, `in`)
-                        if (classFilter(`in`.name)) {
-                            transformFile(`in`, out, function)
+                            toOutputFile(outputDir, inputDir, inputFile)
+                        if (classFilter(inputFile.name)) {
+                            transformFile(inputFile, out, function)
                         }
                     }
                 }
             }
         }
-        val msg = "transform $name 耗时: ${ (System.nanoTime() - start) / 1000000f } ms"
+        val msg = "transform $name 耗时: ${(System.nanoTime() - start) / 1000000f} ms"
         BeautyLog.dog(msg)
         BeautyLog.log(name, false)
     }
@@ -155,7 +149,7 @@ abstract class BaseTransform(private val project: Project) : Transform() {
         function: BiConsumer<InputStream, OutputStream>?
     ) {
         Files.createParentDirs(outputJar)
-        FileInputStream(inputJar).use { fis ->
+        FileInputStream(inputJar).use { fis -> //TODO use 方法自动关闭流
             ZipInputStream(fis).use { zis ->
                 FileOutputStream(outputJar).use { fos ->
                     ZipOutputStream(fos).use { zos ->
@@ -179,7 +173,7 @@ abstract class BaseTransform(private val project: Project) : Transform() {
         inputFile: File, outputFile: File, function: BiConsumer<InputStream, OutputStream>?
     ) {
         Files.createParentDirs(outputFile)
-        FileInputStream(inputFile).use { fis ->
+        FileInputStream(inputFile).use { fis -> //use 方法自动关闭流
             FileOutputStream(outputFile).use { fos -> apply(function, fis, fos) }
         }
     }
@@ -196,10 +190,10 @@ abstract class BaseTransform(private val project: Project) : Transform() {
     @Throws(IOException::class)
     private fun apply(
         function: BiConsumer<InputStream, OutputStream>?,
-        `in`: InputStream, out: OutputStream
+        inputStream: InputStream, outputStream: OutputStream
     ) {
         try {
-            function?.accept(`in`, out)
+            function?.accept(inputStream, outputStream)
         } catch (e: UncheckedIOException) {
             throw e.cause!!
         }

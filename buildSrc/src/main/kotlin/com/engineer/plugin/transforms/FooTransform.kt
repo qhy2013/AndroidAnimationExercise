@@ -7,6 +7,8 @@ import java.io.OutputStream
 import java.util.function.BiConsumer
 
 /**
+ * 没有做任何事
+ *
  * @author rookie
  * @since 12-03-2019
  */

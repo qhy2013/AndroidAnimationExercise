@@ -7,6 +7,8 @@ import org.objectweb.asm.Type
 import org.objectweb.asm.commons.AdviceAdapter
 
 /**
+ * 对类的方法进行处理
+ *
  * @author rookie
  * @since 01-08-2020
  */
@@ -28,6 +30,7 @@ class TrackMethodVisitor(
             box(type)
 
             if (className != null && className.contains("$")) {
+                //调用方法：Tracker.c(View)
                 mv.visitMethodInsn(
                     Opcodes.INVOKESTATIC,
                     Constants.tracker,
@@ -36,6 +39,7 @@ class TrackMethodVisitor(
                     false
                 )
             } else if (className != null) {
+                //调用方法：Tracker.c(View, String)
                 mv.visitLdcInsn(className)
                 mv.visitMethodInsn(
                     Opcodes.INVOKESTATIC,

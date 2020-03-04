@@ -21,6 +21,8 @@ class TrackTransform(val project: Project) : BaseTransform(project) {
             reader.accept(visitor, ClassReader.EXPAND_FRAMES)
             val code = writer.toByteArray()
             u.write(code)
+
+            //TODO 这里不用调用u.close()关闭流，外部方法已经处理: use()扩展方法
         }
     }
 

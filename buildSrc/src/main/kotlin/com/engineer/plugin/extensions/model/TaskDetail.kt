@@ -7,8 +7,17 @@ package com.engineer.plugin.extensions.model
 
 class TaskDetail : Comparable<TaskDetail> {
 
+    /**
+     * ms
+     */
     var total = 0f
+    /**
+     * ns
+     */
     var start = 0L
+    /**
+     * ns
+     */
     var end = 0L
     var name = ""
 

@@ -9,6 +9,10 @@ import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 
 /**
+ * 满足下面的条件之一，进行处理
+ * 1.是否在方法上使用了@Tiger注解
+ * 2.配置的tigerClassList
+ *
  * @author rookie
  * @since 01-03-2020
  */
@@ -43,6 +47,7 @@ class TigerClassVisitor(project: Project, classVisitor: ClassVisitor) :
 
     override fun visitAnnotation(desc: String?, visible: Boolean): AnnotationVisitor {
         if (tigerOn && desc.equals(Constants.class_annotation)) {
+            //是否在方法上使用了@Tiger注解
             println("find @Tiger , start hook ")
             needHook = true
         }

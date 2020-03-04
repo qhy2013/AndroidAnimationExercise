@@ -10,11 +10,12 @@ import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.TaskState
 import java.util.*
 import java.util.concurrent.TimeUnit
-import java.util.stream.Collectors
 import kotlin.Comparator
 import kotlin.collections.HashMap
 
 /**
+ * 记录 task 的执行时长等信息
+ *
  * @author rookie
  * @since 11-29-2019
  */

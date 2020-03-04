@@ -3,18 +3,21 @@ package com.engineer.plugin.actions
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import com.engineer.plugin.extensions.model.ApkOutputInfo
 import com.engineer.plugin.extensions.model.Info
-import com.engineer.plugin.utils.BeautyLog
 import com.engineer.plugin.utils.Common
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import groovy.json.JsonOutput
 import org.gradle.api.Project
-import org.gradle.api.tasks.TaskState
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
 
 /**
+ * 计算打包的APK文件信息
+ *
+ * 1.git分支，提交记录id
+ * 2.文件时间，文件路径，文件大小
+ *
  * @author rookie
  * @since 11-29-2019
  */

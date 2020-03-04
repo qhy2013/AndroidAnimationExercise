@@ -8,6 +8,8 @@ import com.engineer.plugin.utils.Common
 import org.gradle.api.Project
 
 /**
+ * 修改打包生成的APK文件名
+ *
  * @author rookie
  * @since 11-29-2019
  */

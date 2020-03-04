@@ -2,9 +2,13 @@ package com.engineer.plugin.transforms.track
 
 import com.engineer.plugin.extensions.PhoenixExtension
 import org.gradle.api.Project
-import org.objectweb.asm.*
+import org.objectweb.asm.ClassVisitor
+import org.objectweb.asm.MethodVisitor
+import org.objectweb.asm.Opcodes
 
 /**
+ * 处理对单个class文件的访问
+ *
  * @author rookie
  * @since 01-08-2020
  */
@@ -34,7 +38,7 @@ class TrackClassVisitor(private val project: Project, classVisitor: ClassVisitor
         if (trackOn.not()) {
             return
         }
-
+        //TODO 定位到要处理的class文件
         if (name?.startsWith("home/smart/fly/animations") == true) {
 
             interfaces?.forEach {
@@ -56,7 +60,9 @@ class TrackClassVisitor(private val project: Project, classVisitor: ClassVisitor
     ): MethodVisitor {
         var methodVisitor = super.visitMethod(access, name, desc, signature, exceptions)
         if (trackOn && hack) {
-//            println("name is $name, desc is $desc")
+
+            //TODO 定位到要处理的方法
+            //println("name is $name, desc is $desc")
             if (name.equals("onClick") && desc.equals("(Landroid/view/View;)V")) {
                 methodVisitor =
                     TrackMethodVisitor(className, Opcodes.ASM6, methodVisitor, access, name, desc)
